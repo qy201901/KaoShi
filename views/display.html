@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>display</title>
+	<script src="/javascripts/jquery.min.js"></script>
+    <style>
+        th, td, p, input {
+            font:14px Verdana;
+        }
+        table, th, td 
+        {
+            border: solid 2px #DDD;
+            border-collapse: collapse;
+            padding: 2px 3px;
+            text-align: center;
+        }
+        th {
+            font-weight:bold;
+        }
+    </style>
+
+</head>
+<body>  
+	<h1>成绩汇总（区块链）</h1>
+	<table id="tb1" border="1">
+	<thead>
+		<tr><th>序号</th><th>考生编号</th><th>考生姓名</th> <th>得分</th><th>当前哈希值（hash）</th><th>上个哈希值（previousBlockHash）</th></tr></thead>
+		<tbody id="tbd1">		
+		 </tbody>
+	</table>
+	<form>
+		Sum: <input type="text" name="sum"><br>
+		Average: <input type="text" name="avg"><br>
+		Votes: <input type="text" name="n"><br>
+		<input type="button" value="Average" onclick="calcAvg()">
+	</form>
+
+</body>
+
+  <script>    
+    	fetch('display1')
+    	               .then(function (response) {    	   					   				
+    	                   return response.json();
+    	               })
+					   .then(function (data) {    	   				  
+    	                  var tbd1 = $("#tbd1");
+						  var sum=0;
+						  tbd1.empty();						  
+						   $.each(data.blockchain.chain,function(key,value){							  
+						       tbd1.append("<tr><td>"+ value.index + "</td><td>"+ value.id + "</td><td>"+ value.carData + "</td><td>"+ value.carPlate + "</td><td>"+ value.hash + "</td><td>"+ value.previousBlockHash + "</td></tr>");
+						       //sum =+ parseInt(value.carPlate);
+							   //alert(sum);
+						   });
+						
+						   //var sum=0;
+	                       var n=0;
+	                       var avg=0;
+
+						   for (let i=1; i < data.blockchain.chain.length; i++){
+							var score = parseInt(data.blockchain.chain[i].carPlate);
+							sum = sum + score;
+							n++;	
+                        }
+						
+						
+						avg = sum/n;
+						avg = avg.toFixed(2);
+						document.getElementsByName("sum")[0].value = sum;
+						document.getElementsByName("avg")[0].value = avg;
+						document.getElementsByName("n")[0].value = n;
+	                    
+						  
+    	               })
+    	               .catch(function (err) {
+    	   				alert("err");
+    	                   console.log('error: ' + err);
+    	               });
+  
+  </script>
+    
+
+
